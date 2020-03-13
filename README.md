@@ -1,2 +1,2 @@
-# Multythreading_Programming_DATI
+# Multithreading_Programming_DATI
 Multythreading programming course at MIPT by @Acronis
