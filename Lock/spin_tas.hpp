@@ -1,5 +1,6 @@
 #include <atomic>
 #include <cassert>
+
 class Spin_lock_tas{
 public:
 	Spin_lock_tas():
