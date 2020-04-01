@@ -1,6 +1,5 @@
 #include "spin_tas.hpp"
 #include <vector>
-#include <thread>
 #include <iostream>
 
 Spin_lock_tas m_lock;
@@ -9,8 +8,12 @@ void Count_to_mln(int id){
 	// Spin_lock_tas m_lock;
 	m_lock.lock();
 	std::cout << "Thread " << id << " came to job" << std::endl;
+	fflush(stdout);
+
 	for (volatile int i(0); i < ITER_NUMBER; ++i) {}  
+
 	std::cout << "Thread " << id << " finished job" << std::endl;
+	fflush(stdout);
 	m_lock.unlock();
 }
 
