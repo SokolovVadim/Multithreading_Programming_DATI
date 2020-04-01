@@ -6,7 +6,7 @@ Spin_lock_tas m_lock;
 
 void Count_to_mln(int id){
 	// Spin_lock_tas m_lock;
-	m_lock.lock();
+	m_lock.pause_lock();
 	std::cout << "Thread " << id << " came to job" << std::endl;
 	fflush(stdout);
 
