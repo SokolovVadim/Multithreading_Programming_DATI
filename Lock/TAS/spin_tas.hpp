@@ -1,9 +1,10 @@
 #include <atomic>
 #include <cassert>
+#include <thread>
 
 enum THREAD_COMP{
-	THREAD_NUMBER = 64,
-	ITER_NUMBER   = 1000000
+	THREAD_NUMBER = 109,
+	ITER_NUMBER   = 10000000
 };
 
 class Spin_lock_tas{
