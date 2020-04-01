@@ -26,6 +26,5 @@ int main()
   	for (auto& th : threads)
   		th.join();
 
-
 	return 0;
 }
