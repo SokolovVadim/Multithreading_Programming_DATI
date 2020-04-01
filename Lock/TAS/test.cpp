@@ -5,11 +5,11 @@
 
 Spin_lock_tas m_lock;
 
-void Count_to_1000(int id){
+void Count_to_mln(int id){
 	// Spin_lock_tas m_lock;
 	m_lock.lock();
 	std::cout << "Thread " << id << " came to job" << std::endl;
-	for (volatile int i(0); i < 100000000; ++i) {}  
+	for (volatile int i(0); i < ITER_NUMBER; ++i) {}  
 	std::cout << "Thread " << id << " finished job" << std::endl;
 	m_lock.unlock();
 }
@@ -17,9 +17,9 @@ void Count_to_1000(int id){
 int main()
 {
 	std::vector<std::thread> threads;
-	std::cout << "spawning 10 threads that count to 1 million...\n";
-	for (int i(0); i <= 10; ++i)
-		threads.push_back(std::thread(Count_to_1000, i));
+	std::cout << "spawning " << THREAD_NUMBER << " threads that count to 1 million...\n";
+	for (int i(0); i <= THREAD_NUMBER; ++i)
+		threads.push_back(std::thread(Count_to_mln, i));
   	for (auto& th : threads)
   		th.join();
 
