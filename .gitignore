@@ -31,3 +31,7 @@
 *.out
 *.app
 run
+
+# data
+report*
+data.txt
