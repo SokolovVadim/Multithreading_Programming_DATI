@@ -38,6 +38,6 @@ int main()
 		float time(0.0);
 		stream >> time;
 		fout << i << " " << time << std::endl;
-		i += 2;
+		i += 1;
 	}
 }
