@@ -4,7 +4,14 @@
 #include <vector>
 
 const double mistake = 0.01;
+const double sigma   = 0.005;
+enum COMPONENTS{
+	OPTIMISATION_NUM = 15,
+	FILES_NUM = 4
+};
 
+
+// please skip this function ...
 
 double get_time(std::string & line)
 {
@@ -20,7 +27,7 @@ double get_time(std::string & line)
 			line[i - 6] = ' ';
 			line[i - 7] = ' ';
 			line[i - 8] = ' ';
-			line[i + 4] = ' ';
+			line[i + FILES_NUM] = ' ';
 		}
 	}
 	std::stringstream stream(line);
@@ -29,26 +36,22 @@ double get_time(std::string & line)
 	return time;
 }
 
+// simple median substitution
+
 void process_data(std::vector<std::vector<double>> & data)
 {
 	int counter(0);
 	for(int i(1); i < data.size() - 2; ++i)
 	{
-		// fout << i << " ";
-		for(int j(0); j < 4; ++j)
+		for(int j(0); j < FILES_NUM; ++j)
 		{
-			// std::cout << data.at(i).at(j) << " ";
 			if(double(data.at(i).at(j) - data.at(i - 1).at(j)) > mistake){
 				data.at(i).at(j) = (data.at(i + 1).at(j) + data.at(i - 1).at(j)) / 2.0;
 				counter++;
 			}
-			//fout << data.at(i).at(j) << " ";
 		}
-
-		// std::cout << std::endl;
-		//fout << "\n";
 	}
-	std::cout << "Points to be corrected: " << counter << std::endl;
+	std::cout << "Points corrected: " << counter << std::endl;
 }
 
 void process_data_and_out(std::vector<std::vector<double>> & data, std::ofstream & fout)
@@ -57,64 +60,61 @@ void process_data_and_out(std::vector<std::vector<double>> & data, std::ofstream
 	for(int i(1); i < data.size() - 2; ++i)
 	{
 		fout << i << " ";
-		for(int j(0); j < 4; ++j)
+		for(int j(0); j < FILES_NUM; ++j)
 		{
-			// std::cout << data.at(i).at(j) << " ";
 			if(double(data.at(i).at(j) - data.at(i - 1).at(j)) > mistake){
 				data.at(i).at(j) = (data.at(i + 1).at(j) + data.at(i - 1).at(j)) / 2.0;
 				counter++;
 			}
 			fout << data.at(i).at(j) << " ";
 		}
-
-		// std::cout << std::endl;
 		fout << "\n";
 	}
-	std::cout << "Points to be corrected: " << counter << std::endl;
+	std::cout << "Points corrected: " << counter << std::endl;
 }
 
 void process_data_lvl2(std::vector<std::vector<double>> & data, std::ofstream & fout)
-{
-	double k_average(0.0);
-	for(int i(2); i < data.size() - 2; ++i)
-	{
-		for(int j(0); j < 4; ++j)
-		{
-			if(j == 0){
-				double k = (data.at(i).at(j); - data.at(0).at(0)) / double(i);
-				k_average += k;
-			}
-		}
-	}
-	std::cout << "k average: " << k_average / double(data.size()) << std::endl;
+{	
+	// Liniarisation & interpolation
+	std::vector<double> v_k_average;
+	for(int i(0); i < FILES_NUM; ++i)
+		v_k_average.push_back(0.0);
 
 	for(int i(2); i < data.size() - 2; ++i)
 	{
-		// fout << i << " ";
-		
-		for(int j(0); j < 4; ++j)
+		std::vector<double> v_k;
+		for(int j(0); j < FILES_NUM; ++j)
 		{
-			// std::cout << data.at(i).at(j) << " ";
-			double p1 = data.at(i - 2).at(j);
-			double p2 = data.at(i - 1).at(j);
-			double p3 = data.at(i).at(j);
-			double p4 = data.at(i + 1).at(j);
-			double p5 = data.at(i + 2).at(j);
-
-			if(j == 0){
-				double k = (p3 - data.at(0).at(0)) / double(i);
-				k_average += k;
-			}
-
-
-			// fout << data.at(i).at(j) << " ";
+			v_k.push_back((data.at(i).at(j) - data.at(0).at(j)) / double(i));
+			v_k_average.at(j) += v_k.back();
 		}
+		v_k.clear();
 	}
+	for(int i(0); i < FILES_NUM; ++i)
+		v_k_average.at(i) /= double(data.size());
+
+	// find inadequate data points and substitute them by linearised values
+	int counter(0);
+	for(int i(2); i < data.size() - 2; ++i)
+	{
+		fout << i << " ";
+		for(int j(0); j < FILES_NUM; ++j)
+		{
+			if(data.at(i).at(j) - v_k_average.at(j) * (i) > sigma){
+				data.at(i).at(j) = v_k_average.at(j) * i;
+				counter++;
+			}
+			fout << data.at(i).at(j) << " ";
+		}
+		fout << "\n";
+	}
+	std::cout << "Points corrected on lvl2: " << counter << std::endl;
 }
 
 
 int main()
 {
+	// assing resources
 	std::ifstream fin("report.txt");
 	std::string line;
 	std::ifstream fin1("report1.txt");
@@ -125,10 +125,10 @@ int main()
 	std::string line3;
 	int counter(0);
 	std::ofstream fout("data.txt");
-	int i(1);
-
-
+	
 	std::vector<std::vector<double>> data;
+
+	// read and store data
 
 	while (std::getline(fin, line))
 	{
@@ -142,41 +142,22 @@ int main()
 
 		std::vector<double> v;
 
-		
-		double time  = get_time(line);
-		double time1 = get_time(line1);
-		double time2 = get_time(line2);
-		double time3 = get_time(line3);
-
-		v.push_back(time);
-		v.push_back(time1);
-		v.push_back(time2);
-		v.push_back(time3);
+		v.push_back(get_time(line));
+		v.push_back(get_time(line1));
+		v.push_back(get_time(line2));
+		v.push_back(get_time(line3));
 
 		data.push_back(v);
 		v.clear();
-		// fout << i << " " << time << " " << time1 << " " << time2 << " " << time3 << std::endl;
-		i += 1;
 	}
 
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
-	process_data(data);
+	// optimisation
+
+	for(int i(0); i < OPTIMISATION_NUM; ++i)
+		process_data(data);
 	process_data_lvl2(data, fout);
-	process_data_and_out(data, fout);
+
+	// free resources
 
 	fin.close();
 	fin1.close();
