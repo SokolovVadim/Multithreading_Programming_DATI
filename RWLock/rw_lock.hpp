@@ -1,0 +1,3 @@
+
+int reader();
+int writer();
