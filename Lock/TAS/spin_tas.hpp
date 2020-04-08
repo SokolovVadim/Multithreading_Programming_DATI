@@ -4,7 +4,7 @@
 
 enum THREAD_COMP{
 	THREAD_NUMBER = 109,
-	ITER_NUMBER   = 10000
+	ITER_NUMBER   = 200000
 };
 
 class Spin_lock_tas{

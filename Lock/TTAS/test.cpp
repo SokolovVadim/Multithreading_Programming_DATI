@@ -26,6 +26,19 @@ int main(int argc, char** argv)
 	return 0;
 }
 
+void Count_to_mln(int id){
+	// Spin_lock_tas m_lock;
+	m_lock.lock();
+	// std::cout << "Thread " << id << " came to job" << std::endl;
+	// fflush(stdout);
+
+	for (volatile int i(0); i < ITER_NUMBER; ++i) {}  
+
+	/*std::cout << "Thread " << id << " finished job" << std::endl;
+	fflush(stdout);*/
+	m_lock.unlock();
+}
+
 long int ReadArg(char * str)
 {
 	char* endptr;
@@ -52,18 +65,4 @@ long int ReadArg(char * str)
    	}
 
 	return number;
-}
-
-
-void Count_to_mln(int id){
-	// Spin_lock_tas m_lock;
-	m_lock.pause_lock();
-	// std::cout << "Thread " << id << " came to job" << std::endl;
-	// fflush(stdout);
-
-	for (volatile int i(0); i < ITER_NUMBER; ++i) {}  
-
-	/*std::cout << "Thread " << id << " finished job" << std::endl;
-	fflush(stdout);*/
-	m_lock.unlock();
 }
