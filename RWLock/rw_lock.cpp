@@ -11,12 +11,8 @@ int rcount(0);
 void reader(int i);
 void writer(int i);
 
-
-
 int main()
 {
-	printf("Hello\n");
-
 	sem_init(&rentry, 0, 1);
 	sem_init(&resource, 0, 1);
 
@@ -33,7 +29,6 @@ int main()
 	std::thread writer4(writer, 4);
 	std::thread writer5(writer, 5);
 	std::thread writer6(writer, 6);
-
 
 
 	reader1.join();
@@ -80,10 +75,8 @@ void writer(int i)
 {
 	sem_wait(&resource);
 
-	printf("writer %d is writing\n", i);
     shared_data += i * 10;
-
-	//std::this_thread::sleep_for (std::chrono::seconds(2));
+    printf("writer %d is writing data = %d\n", i, shared_data);
 
 	sem_post(&resource);
 	
