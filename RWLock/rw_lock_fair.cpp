@@ -3,6 +3,9 @@
 #include <vector>
 #include <semaphore.h>
 
+#define handle_error(msg) \
+    do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
 enum { THREAD_NUM = 5 };
 
 sem_t resource;
@@ -17,9 +20,12 @@ void writer(int i);
 
 int main()
 {
-	sem_init(&rentry, 0, 1);
-	sem_init(&resource, 0, 1);
-	sem_init(&queue, 0, 1);
+	if(sem_init(&rentry,   0, 1) == -1)
+		handle_error("sem_init");
+	if(sem_init(&resource,   0, 1) == -1)
+		handle_error("sem_init");
+	if(sem_init(&queue,   0, 1) == -1)
+		handle_error("sem_init");
 
 	std::vector<std::thread> threads(2 * THREAD_NUM);
 
@@ -33,9 +39,12 @@ int main()
         th.join();
     }
 
-	sem_destroy(&rentry);
-	sem_destroy(&resource);
-	sem_destroy(&queue);
+     if(sem_destroy(&rentry) == -1)
+    	handle_error("sem_destroy");
+	if(sem_destroy(&resource) == -1)
+    	handle_error("sem_destroy");
+    if(sem_destroy(&queue) == -1)
+    	handle_error("sem_destroy");
 
 	return 0;
 }
