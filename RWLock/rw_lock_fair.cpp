@@ -4,6 +4,7 @@
 
 sem_t resource;
 sem_t rentry;
+sem_t queue;
 
 int shared_data(0);
 int rcount(0);
@@ -15,6 +16,7 @@ int main()
 {
 	sem_init(&rentry, 0, 1);
 	sem_init(&resource, 0, 1);
+	sem_init(&queue, 0, 1);
 
 	std::thread reader1(reader, 1);
 	std::thread reader2(reader, 2);
@@ -47,6 +49,7 @@ int main()
 
 	sem_destroy(&rentry);
 	sem_destroy(&resource);
+	sem_destroy(&queue);
 
 	return 0;
 }
@@ -54,11 +57,13 @@ int main()
 
 void reader(int i)
 {
+	sem_wait(&queue);
 	sem_wait(&rentry);
 	if(++rcount == 1)
 		sem_wait(&resource);
 
 	sem_post(&rentry);
+	sem_post(&queue);
 
 	printf("reader %d is reading data = %d\n", i, shared_data);
 
@@ -73,11 +78,12 @@ void reader(int i)
 
 void writer(int i)
 {
+	sem_wait(&queue);
 	sem_wait(&resource);
+	sem_post(&queue);
 
     shared_data += i * 10;
     printf("writer %d is writing data = %d\n", i, shared_data);
 
 	sem_post(&resource);
-	
 }
