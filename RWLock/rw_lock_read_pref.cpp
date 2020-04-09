@@ -1,6 +1,9 @@
 #include <iostream>
 #include <thread>
+#include <vector>
 #include <semaphore.h>
+
+enum { THREAD_NUM = 5 };
 
 sem_t resource;
 sem_t rentry;
@@ -16,34 +19,17 @@ int main()
 	sem_init(&rentry, 0, 1);
 	sem_init(&resource, 0, 1);
 
-	std::thread reader1(reader, 1);
-	std::thread reader2(reader, 2);
-	std::thread reader3(reader, 3);	
-	std::thread reader4(reader, 4);
-	std::thread reader5(reader, 5);
-	std::thread reader6(reader, 6);
+	std::vector<std::thread> threads(2 * THREAD_NUM);
 
-	std::thread writer1(writer, 1);
-	std::thread writer2(writer, 2);
-	std::thread writer3(writer, 3);
-	std::thread writer4(writer, 4);
-	std::thread writer5(writer, 5);
-	std::thread writer6(writer, 6);
+	for(int i(0); i < THREAD_NUM; ++i)
+		threads[i] = std::thread(reader, i);
 
+	for(int i(THREAD_NUM); i < 2 * THREAD_NUM; ++i)
+		threads[i] = std::thread(writer, i);
 
-	reader1.join();
-	reader2.join();
-	reader3.join();
-	reader4.join();
-	reader5.join();
-	reader6.join();
-
-	writer1.join();
-	writer2.join();
-	writer3.join();
-	writer4.join();
-	writer5.join();
-	writer6.join();
+ 	for (auto& th : threads) {
+        th.join();
+    }
 
 	sem_destroy(&rentry);
 	sem_destroy(&resource);
