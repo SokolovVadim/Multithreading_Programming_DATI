@@ -22,6 +22,8 @@ public:
 	void pop_back();
 	void display();
 	void loud_display();
+	void push_front(const T& value);
+	void pop_front();
 
 private:
 	Node<T>* head;
@@ -70,31 +72,16 @@ void List<T>::push_back(const T& value)
 //==========================================================
 
 template<typename T>
-void List<T>::display()
+void List<T>::push_front(const T& value)
 {
 	Node<T>* temp = head;
+	head = new Node<T>;
+	head->data = value;
+	head->next = temp;
 
-	while(temp != nullptr)
-	{
-		std::cout << temp->data << "\t";
-		temp = temp->next;
-	}
-	std::cout << std::endl;
-}
-
-//==========================================================
-
-template<typename T>
-void List<T>::loud_display()
-{
-	Node<T>* temp = head;
-
-	while(temp != nullptr)
-	{
-		std::cout << temp->data << "\t" << temp << "\t" << temp->next << "\t" << head << "\t" << tail;
-		std::cout << std::endl;
-		temp = temp->next;
-	}
+	// list with the only one element
+	if(tail == nullptr)
+		tail = head;
 }
 
 //==========================================================
@@ -127,6 +114,62 @@ void List<T>::pop_back()
 	tail->next = nullptr;
 }
 
+//==========================================================
+
+template<typename T>
+void List<T>::pop_front()
+{
+	// empty list
+	if (head == nullptr)
+    {
+        throw std::out_of_range("Can't pop from empty list");
+    }
+
+    // list with the only one element
+    if(head == tail)
+    {
+    	delete head;
+    	head = nullptr;
+    	tail = nullptr;
+    	return;
+    }
+
+    Node<T>* temp = head->next;
+    delete head;
+    head = temp;
+}
+
+//==========================================================
+
+template<typename T>
+void List<T>::display()
+{
+	Node<T>* temp = head;
+
+	while(temp != nullptr)
+	{
+		std::cout << temp->data << "\t";
+		temp = temp->next;
+	}
+	std::cout << std::endl;
+}
+
+//==========================================================
+
+template<typename T>
+void List<T>::loud_display()
+{
+	Node<T>* temp = head;
+
+	while(temp != nullptr)
+	{
+		std::cout << temp->data << "\t" << temp << "\t" << temp->next << "\t" << head << "\t" << tail;
+		std::cout << std::endl;
+		temp = temp->next;
+	}
+}
+
+//==========================================================
 
 
 
