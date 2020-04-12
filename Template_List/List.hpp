@@ -1,11 +1,20 @@
 //==========================================================
-// List with CAS insertion and iterator
+// List with CAS insertion and iterator for_each
 //==========================================================
+
 template<typename T>
 struct Node
 {
  	T data;
  	Node<T>* next;
+ 	Node():
+ 		data({}),
+ 		next(nullptr)
+ 	{}
+ 	Node(const T& value, Node<T>* next = nullptr):
+		data(value),
+		next(next)
+	{}
 }; 
 
 //==========================================================
@@ -74,11 +83,8 @@ void List<T>::push_back(const T& value)
 template<typename T>
 void List<T>::push_front(const T& value)
 {
-	Node<T>* temp = head;
-	head = new Node<T>;
-	head->data = value;
-	head->next = temp;
-
+	head = new Node<T>(value, head);
+	
 	// list with the only one element
 	if(tail == nullptr)
 		tail = head;

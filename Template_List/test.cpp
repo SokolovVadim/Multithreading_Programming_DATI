@@ -7,6 +7,7 @@ int main()
 	std::cout << "Hello!\n";
 	List<std::string> list;
 
+
 	list.push_front("Hey!");
 	list.push_back("It's");
 	list.push_front("Wow!");
