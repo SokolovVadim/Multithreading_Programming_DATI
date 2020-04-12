@@ -8,7 +8,7 @@ struct Node
  	T data;
  	Node<T>* next;
  	Node():
- 		data({}),
+ 		data{},
  		next(nullptr)
  	{}
  	Node(const T& value, Node<T>* next = nullptr):
@@ -33,6 +33,14 @@ public:
 	void loud_display();
 	void push_front(const T& value);
 	void pop_front();
+
+	typedef T* iterator;
+	typedef const T* const_iterator;
+
+	iterator begin();
+	iterator end();
+	const_iterator begin() const;
+	const_iterator end() const;
 
 private:
 	Node<T>* head;
@@ -84,7 +92,7 @@ template<typename T>
 void List<T>::push_front(const T& value)
 {
 	head = new Node<T>(value, head);
-	
+
 	// list with the only one element
 	if(tail == nullptr)
 		tail = head;
@@ -177,5 +185,32 @@ void List<T>::loud_display()
 
 //==========================================================
 
+template<typename T>
+typename List<T>::iterator List<T>::begin()
+{
+	return &head->data;
+}
 
+//==========================================================
 
+template<typename T>
+typename List<T>::iterator List<T>::end()
+{
+	return &tail->data;
+}
+
+//==========================================================
+
+template<typename T>
+typename List<T>::const_iterator List<T>::begin() const
+{
+	return &head->data;
+}
+
+//==========================================================
+
+template<typename T>
+typename List<T>::const_iterator List<T>::end() const
+{
+	return &tail->data;
+}
