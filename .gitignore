@@ -36,3 +36,7 @@ run
 report*
 data.txt
 Lock/TTAS/*.txt
+
+# build
+*/build
+
