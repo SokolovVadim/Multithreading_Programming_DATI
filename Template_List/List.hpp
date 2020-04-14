@@ -35,7 +35,7 @@ public:
 	class iterator {
    	public:
     	iterator(Node<T>* node): node_(node){}
-    	iterator operator++() { node_ = node_->next; return *this; }
+    	iterator operator++();
     	bool operator!=(const iterator & other) const { return node_ != other.node_; }
     	const Node<T>& operator*() const { return *node_; }
     private:
@@ -92,25 +92,11 @@ void List<T>::push_back(const T& value)
 
 	if(head == nullptr)
 	{
-		/*head.compare_exchange_weak(head, new_node,
-                                       std::memory_order_release,
-                                       std::memory_order_relaxed);
-		head.compare_exchange_weak(tail, new_node,
-                                       std::memory_order_release,
-                                       std::memory_order_relaxed);*/
-		/*head.store( new_node);
-		tail.store(new_node);*/
 		head = new_node;
 		tail = new_node;
 	}
 	else
 	{
-		/*
-        !head.compare_exchange_weak(old_tail, new_node,
-	                                       std::memory_order_release,
-	                                       std::memory_order_relaxed)
-
-		*/
 		Node<T>* old_tail = tail.load(std::memory_order_relaxed);
 		int loop_counter(0); // debug variable showing number of thread tries to get the data
 		do
@@ -126,13 +112,6 @@ void List<T>::push_back(const T& value)
 													std::memory_order_release,
                                						std::memory_order_relaxed
 													));
-
-	/*	std::cout << "old_tail->data " << old_tail->data << std::endl;
-		std::cout << "new_node->data " << new_node->data << std::endl;*/
-
-		/*Node<T>* old_tail = tail.load(std::memory_order_relaxed);
-		old_tail->next = new_node;
-		tail = old_tail->next;*/
 	}
 }
 
@@ -271,11 +250,19 @@ typename List<T>::iterator List<T>::begin()
 
 //==========================================================
 
-
 template<typename T>
 typename List<T>::iterator List<T>::end()
 {
 	return iterator(tail);
+}
+
+//==========================================================
+
+template<typename T>
+typename List<T>::iterator List<T>::iterator::operator++()
+{
+	node_ = node_->next;
+	return *this;
 }
 
 #endif // LIST_HPP

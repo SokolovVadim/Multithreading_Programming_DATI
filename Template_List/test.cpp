@@ -10,6 +10,7 @@
 void test();
 void test_push_back(int id, List<std::string> & list);
 void test_push_front(int id, List<std::string> & list);
+void test_range_based_loop(int id, List<std::string> & list);
 void pop(int id);
 
 enum { THREAD_NUM = 30 };
@@ -22,16 +23,35 @@ int main()
 
 
 	List<std::string> list;
+	list.push_back("Switchblades");
+	list.push_back("cocaine");
+	list.push_back("GothBoiClique");
+	list.push_back("make");
+	list.push_back("a");
+	list.push_back("hoe");
+	list.push_back("shake");
+	list.push_back("Black");
+	list.push_back("fur");
+	list.push_back("black");
+	list.push_back("coat");
+	list.push_back("GothBoiClique");
+	list.push_back("in");
+	list.push_back("the");
+	list.push_back("back");
+	list.push_back("hoe");
+
+
+
 	std::vector<std::thread> v_thread(THREAD_NUM);
 	for(int i(0); i < THREAD_NUM; ++i)
-		v_thread[i] = std::thread(test_push_front, i, std::ref(list));
+		v_thread[i] = std::thread(test_range_based_loop, i, std::ref(list));
 
 	
 	for(int i(0); i < THREAD_NUM; ++i)
 		v_thread[i].join();
 
 
-	/*std::cout << std::endl;
+/*	std::cout << std::endl;
 	for(Node<std::string> i:list)
 		std::cout << i.data << " ";*/
 	
@@ -143,7 +163,7 @@ void test_push_back(int id, List<std::string> & list)
 	list.push_back("in");
 	list.push_back("the");
 	list.push_back("back");
-	list.push_back("hoe");
+	list.push_back("hoe\n");
 	list.push_back("Switchblades");
 	list.push_back("cocaine");
 	list.push_back("GothBoiClique");
@@ -159,7 +179,7 @@ void test_push_back(int id, List<std::string> & list)
 	list.push_back("in");
 	list.push_back("the");
 	list.push_back("back");
-	list.push_back("hoe");
+	list.push_back("hoe\n");
 	list.push_back("Switchblades");
 	list.push_back("cocaine");
 	list.push_back("GothBoiClique");
@@ -175,7 +195,7 @@ void test_push_back(int id, List<std::string> & list)
 	list.push_back("in");
 	list.push_back("the");
 	list.push_back("back");
-	list.push_back("hoe");
+	list.push_back("hoe\n");
 }
 
 
@@ -197,7 +217,7 @@ void test_push_front(int id, List<std::string> & list)
 	list.push_front("in");
 	list.push_front("the");
 	list.push_front("back");
-	list.push_front("hoe");
+	list.push_front("hoe\n");
 	list.push_front("Switchblades");
 	list.push_front("cocaine");
 	list.push_front("GothBoiClique");
@@ -213,7 +233,7 @@ void test_push_front(int id, List<std::string> & list)
 	list.push_front("in");
 	list.push_front("the");
 	list.push_front("back");
-	list.push_front("hoe");
+	list.push_front("hoe\n");
 	list.push_front("Switchblades");
 	list.push_front("cocaine");
 	list.push_front("GothBoiClique");
@@ -229,5 +249,19 @@ void test_push_front(int id, List<std::string> & list)
 	list.push_front("in");
 	list.push_front("the");
 	list.push_front("back");
-	list.push_front("hoe");
+	list.push_front("hoe\n");
+}
+
+void test_range_based_loop(int id, List<std::string> & list)
+{
+	std::cout << std::endl;
+	for(Node<std::string> i:list)
+		std::cout << i.data << " ";
+	std::cout << std::endl;
+	for(Node<std::string> i:list)
+		std::cout << i.data << " ";
+	std::cout << std::endl;
+	for(Node<std::string> i:list)
+		std::cout << i.data << " ";
+	std::cout << std::endl;
 }
