@@ -1,6 +1,11 @@
+#ifndef LIST_HPP
+#define LIST_HPP
+
 //==========================================================
 // List with CAS insertion and iterator for_each
 //==========================================================
+
+#include<atomic>
 
 template<typename T>
 struct Node
@@ -49,7 +54,7 @@ public:
 	iterator end() const;
 
 private:
-	Node<T>* head;
+	std::atomic<Node<T>*> head;
 	Node<T>* tail;
 };
 
@@ -76,9 +81,7 @@ List<T>::~List()
 template<typename T>
 void List<T>::push_back(const T& value)
 {
-	Node<T>* temp = new Node<T>;
-	temp->data = value;
-	temp->next = nullptr;
+	Node<T>* temp = new Node<T>(value, nullptr);
 
 	if(head == nullptr)
 	{
@@ -221,3 +224,5 @@ typename List<T>::iterator List<T>::end()
 {
 	return iterator(tail);
 }
+
+#endif // LIST_HPP
