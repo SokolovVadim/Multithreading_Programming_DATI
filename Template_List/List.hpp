@@ -98,6 +98,8 @@ void List<T>::push_back(const T& value)
 		head.compare_exchange_weak(tail, new_node,
                                        std::memory_order_release,
                                        std::memory_order_relaxed);*/
+		/*head.store( new_node);
+		tail.store(new_node);*/
 		head = new_node;
 		tail = new_node;
 	}
@@ -110,8 +112,12 @@ void List<T>::push_back(const T& value)
 
 		*/
 		Node<T>* old_tail = tail.load(std::memory_order_relaxed);
+		int loop_counter(0); // debug variable showing number of thread tries to get the data
 		do
 		{
+			if(loop_counter > 0)
+				std::cout << "MISS" << std::endl;
+			loop_counter++;
 			old_tail->next = new_node;
 		}while(!std::atomic_compare_exchange_weak_explicit(
 													&tail,
