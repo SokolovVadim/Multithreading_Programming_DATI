@@ -59,7 +59,7 @@ public:
 
 private:
 	std::atomic<Node<T>*> head;
-	Node<T>* tail;
+	std::atomic<Node<T>*> tail;
 };
 
 //==========================================================
@@ -88,17 +88,45 @@ template<typename T>
 void List<T>::push_back(const T& value)
 {
 	// Node<T>* temp = new Node<T>(value);
-	Node<T>* temp = new Node<T>(value);
+	Node<T>* new_node = new Node<T>(value);
 
 	if(head == nullptr)
 	{
-		head = temp;
-		tail = temp;
+		/*head.compare_exchange_weak(head, new_node,
+                                       std::memory_order_release,
+                                       std::memory_order_relaxed);
+		head.compare_exchange_weak(tail, new_node,
+                                       std::memory_order_release,
+                                       std::memory_order_relaxed);*/
+		head = new_node;
+		tail = new_node;
 	}
 	else
 	{
-		tail->next = temp;
-		tail = tail->next;
+		/*
+        !head.compare_exchange_weak(old_tail, new_node,
+	                                       std::memory_order_release,
+	                                       std::memory_order_relaxed)
+
+		*/
+		Node<T>* old_tail = tail.load(std::memory_order_relaxed);
+		do
+		{
+			old_tail->next = new_node;
+		}while(!std::atomic_compare_exchange_weak_explicit(
+													&tail,
+													&old_tail,
+													new_node,
+													std::memory_order_release,
+                               						std::memory_order_relaxed
+													));
+
+	/*	std::cout << "old_tail->data " << old_tail->data << std::endl;
+		std::cout << "new_node->data " << new_node->data << std::endl;*/
+
+		/*Node<T>* old_tail = tail.load(std::memory_order_relaxed);
+		old_tail->next = new_node;
+		tail = old_tail->next;*/
 	}
 }
 
@@ -117,8 +145,9 @@ void List<T>::push_front(const T& value)
                                        std::memory_order_relaxed));
 	
 	// list with the only one element
-	if(tail == nullptr)
-		tail = head;
+	if(tail == nullptr){
+		tail = head.load(std::memory_order_relaxed);
+	}
 }
 
 //==========================================================
