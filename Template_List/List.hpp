@@ -19,29 +19,6 @@ struct Node
 
 //==========================================================
 
-
-/*template <typename DataType>
- class PodArray {
- public:
-   class iterator {
-   public:
-     iterator(DataType * ptr): ptr(ptr){}
-     iterator operator++() { ++ptr; return *this; }
-     bool operator!=(const iterator & other) const { return ptr != other.ptr; }
-     const DataType& operator*() const { return *ptr; }
-   private:
-     DataType* ptr;
-   };
- private:
-   unsigned len;
-   DataType *val;
- public:
-   iterator begin() const { return iterator(val); }
-   iterator end() const { return iterator(val + len); }
-
-   // rest of the container definition not related to the question ...
- };*/
-
 template<typename T>
 class List
 {
@@ -61,21 +38,15 @@ public:
 
 	void push_back(const T& value);
 	void pop_back();
-	void display();
-	void loud_display();
 	void push_front(const T& value);
 	void pop_front();
-
-	iterator begin() const { return iterator(head); }
-	iterator end() const { return iterator(tail); }
-
-/*	typedef T* iterator;
-	typedef const T* const_iterator;
+	void display();
+	void loud_display();
 
 	iterator begin();
 	iterator end();
-	const_iterator begin() const;
-	const_iterator end() const;*/
+	iterator begin() const;
+	iterator end() const;
 
 private:
 	Node<T>* head;
@@ -219,34 +190,34 @@ void List<T>::loud_display()
 }
 
 //==========================================================
-/*
+
 template<typename T>
-typename List<T>::iterator List<T>::begin()
+typename List<T>::iterator List<T>::begin() const
 {
-	return &head->data;
+	return iterator(head);
 }
 
 //==========================================================
+
+template<typename T>
+typename List<T>::iterator List<T>::end() const
+{
+	return iterator(tail);
+}
+
+//==========================================================
+
+template<typename T>
+typename List<T>::iterator List<T>::begin()
+{
+	return iterator(head);
+}
+
+//==========================================================
+
 
 template<typename T>
 typename List<T>::iterator List<T>::end()
 {
-	return &tail->data;
+	return iterator(tail);
 }
-
-//==========================================================
-
-template<typename T>
-typename List<T>::const_iterator List<T>::begin() const
-{
-	return &head->data;
-}
-
-//==========================================================
-
-template<typename T>
-typename List<T>::const_iterator List<T>::end() const
-{
-	return &tail->data;
-}
-*/
