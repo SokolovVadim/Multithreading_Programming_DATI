@@ -16,9 +16,13 @@ struct Node
  		data{},
  		next(nullptr)
  	{}
- 	Node(const T& value, Node<T>* next = nullptr):
+ 	/*Node(const T& value, Node<T>* next = nullptr):
 		data(value),
 		next(next)
+	{}*/
+	Node(const T& value):
+		data(value),
+		next(nullptr)
 	{}
 }; 
 
@@ -77,11 +81,14 @@ List<T>::~List()
 }
 
 //==========================================================
+// https://en.cppreference.com/w/cpp/atomic/atomic/compare_exchange
+//==========================================================
 
 template<typename T>
 void List<T>::push_back(const T& value)
 {
-	Node<T>* temp = new Node<T>(value, nullptr);
+	// Node<T>* temp = new Node<T>(value);
+	Node<T>* temp = new Node<T>(value);
 
 	if(head == nullptr)
 	{
@@ -100,8 +107,15 @@ void List<T>::push_back(const T& value)
 template<typename T>
 void List<T>::push_front(const T& value)
 {
-	head = new Node<T>(value, head);
-
+	Node<T>* new_node = new Node<T>(value);
+	Node<T>* old_head = head.load(std::memory_order_relaxed);
+	do
+	{
+		new_node->next = old_head;
+	}while(!head.compare_exchange_weak(old_head, new_node,
+                                       std::memory_order_release,
+                                       std::memory_order_relaxed));
+	
 	// list with the only one element
 	if(tail == nullptr)
 		tail = head;
