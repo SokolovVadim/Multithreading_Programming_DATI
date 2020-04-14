@@ -143,8 +143,12 @@ void List<T>::push_front(const T& value)
 {
 	Node<T>* new_node = new Node<T>(value);
 	Node<T>* old_head = head.load(std::memory_order_relaxed);
+	int loop_counter(0); // debug variable showing number of thread tries to get the data
 	do
 	{
+		if(loop_counter > 0)
+			std::cout << "MISS" << std::endl;
+		loop_counter++;
 		new_node->next = old_head;
 	}while(!head.compare_exchange_weak(old_head, new_node,
                                        std::memory_order_release,

@@ -8,10 +8,11 @@
 //==========================================================
 
 void test();
-void pusher(int id, List<std::string> & list);
-void poper(int id);
+void test_push_back(int id, List<std::string> & list);
+void test_push_front(int id, List<std::string> & list);
+void pop(int id);
 
-enum { THREAD_NUM = 4 };
+enum { THREAD_NUM = 30 };
 
 //==========================================================
 
@@ -23,16 +24,16 @@ int main()
 	List<std::string> list;
 	std::vector<std::thread> v_thread(THREAD_NUM);
 	for(int i(0); i < THREAD_NUM; ++i)
-		v_thread[i] = std::thread(pusher, i, std::ref(list));
+		v_thread[i] = std::thread(test_push_front, i, std::ref(list));
 
 	
 	for(int i(0); i < THREAD_NUM; ++i)
 		v_thread[i].join();
 
 
-	std::cout << std::endl;
+	/*std::cout << std::endl;
 	for(Node<std::string> i:list)
-		std::cout << i.data << " ";
+		std::cout << i.data << " ";*/
 	
 
 
@@ -125,7 +126,7 @@ Black fur, black coat
 GothBoiClique in the back, hoe
 */
 
-void pusher(int id, List<std::string> & list)
+void test_push_back(int id, List<std::string> & list)
 {
 	list.push_back("Switchblades");
 	list.push_back("cocaine");
@@ -175,4 +176,58 @@ void pusher(int id, List<std::string> & list)
 	list.push_back("the");
 	list.push_back("back");
 	list.push_back("hoe");
+}
+
+
+
+void test_push_front(int id, List<std::string> & list)
+{
+	list.push_front("Switchblades");
+	list.push_front("cocaine");
+	list.push_front("GothBoiClique");
+	list.push_front("make");
+	list.push_front("a");
+	list.push_front("hoe");
+	list.push_front("shake");
+	list.push_front("Black");
+	list.push_front("fur");
+	list.push_front("black");
+	list.push_front("coat");
+	list.push_front("GothBoiClique");
+	list.push_front("in");
+	list.push_front("the");
+	list.push_front("back");
+	list.push_front("hoe");
+	list.push_front("Switchblades");
+	list.push_front("cocaine");
+	list.push_front("GothBoiClique");
+	list.push_front("make");
+	list.push_front("a");
+	list.push_front("hoe");
+	list.push_front("shake");
+	list.push_front("Black");
+	list.push_front("fur");
+	list.push_front("black");
+	list.push_front("coat");
+	list.push_front("GothBoiClique");
+	list.push_front("in");
+	list.push_front("the");
+	list.push_front("back");
+	list.push_front("hoe");
+	list.push_front("Switchblades");
+	list.push_front("cocaine");
+	list.push_front("GothBoiClique");
+	list.push_front("make");
+	list.push_front("a");
+	list.push_front("hoe");
+	list.push_front("shake");
+	list.push_front("Black");
+	list.push_front("fur");
+	list.push_front("black");
+	list.push_front("coat");
+	list.push_front("GothBoiClique");
+	list.push_front("in");
+	list.push_front("the");
+	list.push_front("back");
+	list.push_front("hoe");
 }
