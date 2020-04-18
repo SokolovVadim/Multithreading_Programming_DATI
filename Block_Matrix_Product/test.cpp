@@ -11,9 +11,13 @@ void fill_matrix(T** matrix, int N);
 template<typename T>
 void find_product(T** a, T** b, T** c, int N, int s);
 
+template<typename T>
+void find_naive_product(T** a, T** b, T** c, int N);
+
 int main(int argc, char** argv)
 {
 	try {
+		
 	if(argc != 3)
 	{
 		std::cout << "i'm here\n";
@@ -37,11 +41,13 @@ int main(int argc, char** argv)
 	fill_matrix(a, N);
 	fill_matrix(b, N);
 
-	display_matrix(a, N);
-	display_matrix(b, N);
+	/*display_matrix(a, N);
+	display_matrix(b, N);*/
 
-	find_product(a, b, c, N, S);
-	display_matrix(c, N);
+	// find_product(a, b, c, N, S);
+	find_naive_product(a, b, c, N);
+	// display_matrix(c, N);
+
 
 
 	// memory free
@@ -89,6 +95,21 @@ void find_product(T** a, T** b, T** c, int N, int s)
 	}
 }
 
+
+template<typename T>
+void find_naive_product(T** a, T** b, T** c, int N)
+{
+	for(int i(0); i < N; ++i)
+	{
+		for(int j(0); j < N; ++j)
+		{
+			for(int k(0); k < N; ++k)
+				c[i][j] += a[i][k] * b[k][j];
+		}
+	}
+
+}
+
 template<typename T>
 void display_matrix(T** matrix, int N)
 {
@@ -114,5 +135,6 @@ void fill_matrix(T** matrix, int N)
 		}
 	}
 }
+
 
 
