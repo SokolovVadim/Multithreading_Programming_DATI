@@ -1,5 +1,7 @@
 #include <iostream>
 #include <stdexcept>
+#include <thread>
+#include <vector>
 #include "matrix.hpp"
 
 template<typename T>
@@ -12,12 +14,21 @@ template<typename T>
 void find_product(T** a, T** b, T** c, int N, int s);
 
 template<typename T>
+void thread_find_product_routine(T** a, T** b, T** c, int N, int s, int jj, int kk);
+
+template<typename T>
 void find_naive_product(T** a, T** b, T** c, int N);
+
+template<typename T>
+int foo(T** a)
+{
+	return 0;
+}
 
 int main(int argc, char** argv)
 {
 	try {
-		
+
 	if(argc != 3)
 	{
 		std::cout << "i'm here\n";
@@ -41,13 +52,31 @@ int main(int argc, char** argv)
 	fill_matrix(a, N);
 	fill_matrix(b, N);
 
+
 	/*display_matrix(a, N);
 	display_matrix(b, N);*/
 
-	// find_product(a, b, c, N, S);
-	find_naive_product(a, b, c, N);
+	find_product(a, b, c, N, S);
+	// find_naive_product(a, b, c, N);
+
+
+
 	// display_matrix(c, N);
 
+	/*std::vector<std::thread> thread_v(S * S);
+
+
+	int t_counter(0);
+	for(int jj(0); jj < N; jj += S)
+	    for(int kk(0); kk < N; kk += S)
+	    {
+	    	thread_v[t_counter] = std::thread(thread_find_product_routine<double>, a, b, c, N, S, jj, kk);
+	    	t_counter++;
+	    }
+
+	for(int i(0); i < S; ++i)
+		thread_v[i].join();*/
+	// display_matrix(c, N);
 
 
 	// memory free
@@ -73,6 +102,20 @@ int main(int argc, char** argv)
 inline int my_min(int jj, int s, int N)
 {
 	return (jj + s) > N ? N:(jj + s);
+}
+
+template<typename T>
+void thread_find_product_routine(T** a, T** b, T** c, int N, int s, int jj, int kk)
+{
+	for(int i(0); i < N; i++){
+	    for(int j(jj); j < my_min(jj, s, N); j++){
+	        T temp(0);
+	        for(int k(kk); k < my_min(kk, s, N); k++){
+	            temp += a[i][k] * b[k][j];
+	        }
+	        c[i][j] += temp;
+	    }
+	}
 }
 
 
