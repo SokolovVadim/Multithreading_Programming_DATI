@@ -28,3 +28,24 @@ make fair
 ## Template List
 
 Linked list with Iterator
+
+#### Build
+
+```
+#/bin/bash
+cmake -H. -Bbuild
+cmake --build build
+./build/list
+```
+
+## Block matrix product
+
+
+
+#### Build
+
+```
+#/bin/bash
+cmake -H. -Bbuild
+cmake --build build
+./build/matrix
